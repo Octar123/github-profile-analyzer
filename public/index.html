@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Profile Analyzer - API</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+        line-height: 1.6;
+        color: #222;
+        background: #fff;
+      }
+      h1 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+      }
+      h2 {
+        margin-top: 40px;
+        color: #333;
+      }
+      code,
+      pre {
+        background: #f4f4f4;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 14px;
+      }
+      code {
+        padding: 2px 6px;
+      }
+      pre {
+        padding: 12px;
+        overflow-x: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #f4f4f4;
+      }
+      .method {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 13px;
+        color: #fff;
+      }
+      .get {
+        background: #2e7d32;
+      }
+      .post {
+        background: #e65100;
+      }
+      .endpoint {
+        margin-bottom: 30px;
+      }
+      footer {
+        margin-top: 50px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+        font-size: 13px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub Profile Analyzer - API Reference</h1>
+    <p>
+      This API fetches a GitHub user's profile and repositories, works out their
+      top programming languages, and stores the result in a database.
+    </p>
+    <p><strong>Base URL:</strong> <code>/api/v1</code></p>
+
+    <h2>Endpoints</h2>
+
+    <div class="endpoint">
+      <p>
+        <span class="method post">POST</span> <code>/analyze/:username</code>
+      </p>
+      <p>
+        Fetches the given GitHub user's profile and repositories, calculates
+        their top 3 languages, and saves or updates the record in the database.
+      </p>
+      <table>
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>username</td>
+          <td>path</td>
+          <td>GitHub username to analyze</td>
+        </tr>
+      </table>
+      <p><strong>Example request:</strong></p>
+      <pre>POST /api/v1/analyze/octocat</pre>
+      <p><strong>Example response:</strong></p>
+      <pre>
+{
+  "success": true,
+  "message": "Profile successfully analyzed and saved",
+  "data": {
+    "id": 583231,
+    "username": "octocat",
+    "display_name": "The Octocat",
+    "avatar_url": "https://avatars.githubusercontent.com/u/583231?v=4",
+    "html_url": "https://github.com/octocat",
+    "public_repos": 8,
+    "public_gists": 8,
+    "followers": 18000,
+    "following": 9,
+    "top_languages": ["Ruby", "JavaScript", "CSS"],
+    "profile_created_at": "2011-01-25T18:44:36.000Z"
+  }
+}</pre
+      >
+    </div>
+
+    <div class="endpoint">
+      <p><span class="method get">GET</span> <code>/profiles</code></p>
+      <p>
+        Returns all previously analyzed profiles, most recently analyzed first.
+      </p>
+      <p><strong>Example request:</strong></p>
+      <pre>GET /api/v1/profiles</pre>
+      <p><strong>Example response:</strong></p>
+      <pre>
+{
+  "success": true,
+  "count": 10,
+  "data": [
+    {
+  "success": true,
+  "message": "Profile successfully analyzed and saved",
+  "data": {
+    "id": 583231,
+    "username": "octocat",
+    "display_name": "The Octocat",
+    "avatar_url": "https://avatars.githubusercontent.com/u/583231?v=4",
+    "html_url": "https://github.com/octocat",
+    "company": "@github",
+    "location": "San Francisco",
+    "public_repos": 8,
+    "public_gists": 8,
+    "followers": 23178,
+    "following": 9,
+    "top_languages": [
+        "Ruby",
+        "CSS",
+        "HTML"
+    ],
+    "profile_created_at": "2011-01-25T18:44:36.000Z",
+    "analyzed_at": "2026-07-05T08:03:06.000Z"
+        },
+        ...
+    }
+  ]
+}</pre
+      >
+    </div>
+
+    <div class="endpoint">
+      <p>
+        <span class="method get">GET</span> <code>/profiles/:username</code>
+      </p>
+      <p>Returns the stored analysis for a single username.</p>
+      <table>
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>username</td>
+          <td>path</td>
+          <td>GitHub username to look up</td>
+        </tr>
+      </table>
+      <p><strong>Example request:</strong></p>
+      <pre>GET /api/v1/profiles/octocat</pre>
+      <p><strong>Example response:</strong></p>
+      <pre>
+{
+    "success": true,
+    "data": {
+        "id": 583231,
+        "username": "octocat",
+        "display_name": "The Octocat",
+        "avatar_url": "https://avatars.githubusercontent.com/u/583231?v=4",
+        "html_url": "https://github.com/octocat",
+        "company": "@github",
+        "location": "San Francisco",
+        "public_repos": 8,
+        "public_gists": 8,
+        "followers": 23178,
+        "following": 9,
+        "top_languages": [
+            "Ruby",
+            "CSS",
+            "HTML"
+        ],
+        "profile_created_at": "2011-01-25T18:44:36.000Z",
+        "analyzed_at": "2026-07-05T08:03:06.000Z"
+    }
+}</pre
+      >
+    </div>
+
+    <h2>Stored Profile Fields</h2>
+    <table>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td>id</td>
+        <td>INT</td>
+        <td>GitHub user ID (Primary Key)</td>
+      </tr>
+      <tr>
+        <td>username</td>
+        <td>VARCHAR(40)</td>
+        <td>Unique</td>
+      </tr>
+      <tr>
+        <td>display_name</td>
+        <td>VARCHAR(150)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>avatar_url</td>
+        <td>VARCHAR(255)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>html_url</td>
+        <td>VARCHAR(255)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>email</td>
+        <td>VARCHAR(254)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>company</td>
+        <td>VARCHAR(255)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>location</td>
+        <td>VARCHAR(255)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>bio</td>
+        <td>TEXT</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>public_repos</td>
+        <td>INT</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>public_gists</td>
+        <td>INT</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>followers</td>
+        <td>INT</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>following</td>
+        <td>INT</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>top_languages</td>
+        <td>JSON</td>
+        <td>Top 3 languages by repo count</td>
+      </tr>
+      <tr>
+        <td>profile_created_at</td>
+        <td>TIMESTAMP</td>
+        <td>When the GitHub account was created</td>
+      </tr>
+      <tr>
+        <td>analyzed_at</td>
+        <td>TIMESTAMP</td>
+        <td>When this record was last analyzed</td>
+      </tr>
+    </table>
+
+    <footer>
+      Source on
+      <a href="https://github.com/Octar123/github-profile-analyzer">GitHub</a>.
+    </footer>
+  </body>
+</html>
